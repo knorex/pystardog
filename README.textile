@@ -7,7 +7,7 @@ h2. Dependencies
 
 h2. Examples
 
-* Please see :https://github.com/knorex/pystardog/wiki for more information and example code.
+* Please see "https://github.com/knorex/pystardog/wiki":https://github.com/knorex/pystardog/wiki for more information and example code.
 
 h2. Author
 
