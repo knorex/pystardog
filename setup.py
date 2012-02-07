@@ -2,7 +2,7 @@
 
 from distutils.core import setup
 
-# Install yardflib
+# Install pystardog
 from pystardog import __version__
 
 setup(
