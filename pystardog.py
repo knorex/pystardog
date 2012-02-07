@@ -1,10 +1,29 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+To query over a Stardog server, initialize a StardogClient object then invoke :func:`query`.
+Results are encapsulated in a :class:`ResultsParser` instance::
+    
+    >>> client = StardogClient(server_endpoint)
+    >>> client.set_database(database_name)
+    >>> result = client.query(query)
+    >>> for row in result:
+    >>>     print row
+"""
+
 __version__ = "0.1"
 
 import httplib, urllib
 from urlparse import urlparse
 from xml.dom import pulldom
 import re
-import json
+
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
 import struct
 
 USER_AGENT = "stardog-client/%s" % __version__
@@ -87,8 +106,8 @@ def Datatype(value):
 
 class RDFTerm(object):
     """
-    Super class containing methods to override. :class:`IRI`,
-    :class:`Literal` and :class:`BlankNode` all inherit from :class:`RDFTerm`.
+    Super class containing methods to override. :class:'IRI',
+    :class:'Literal' and :class:'BlankNode' all inherit from :class:'RDFTerm'.
     Notice: This code is reused from sparql-client-0.9
     """
 
@@ -104,7 +123,7 @@ class RDFTerm(object):
         """ Return a Notation3 representation of this term. """
         # To override
         # See N-Triples syntax: http://www.w3.org/TR/rdf-testcases/#ntriples
-        raise NotImplementedError("Subclasses of RDFTerm must implement `n3`")
+        raise NotImplementedError("Subclasses of RDFTerm must implement 'n3'")
 
     def __repr__(self):
         return '<%s %s>' % (type(self).__name__, self.n3())
@@ -165,7 +184,7 @@ class Literal(RDFTerm):
 
 class BlankNode(RDFTerm):
     """ 
-    Blank node. Similar to `IRI` but lacks a stable identifier. 
+    Blank node. Similar to 'IRI' but lacks a stable identifier. 
     Notice: This code is reused from sparql-client-0.9    
     """
     def __init__(self, value):
@@ -182,8 +201,14 @@ class BlankNode(RDFTerm):
         return '_:%s' % self.value
 
 class StardogClient(object):
+    """
+    Main class of the library.
+    """
 
     def __init__(self, server_url):
+        """
+        Ininitialize a Stardog client, users need to pass a Stardog endpoint URL
+        """
         if not server_url.startswith("http://"):
             server_url = "http://" + server_url
         self._server_url = server_url
@@ -211,14 +236,14 @@ class StardogClient(object):
 
     def set_reasoning(self, reasoning):
         """
-        Set reasoning type, accepted values: `DL`, `EL`, `QL`, `RL`, `RDFS`, `None` (default)
+        Set reasoning type, accepted values: 'DL', 'EL', 'QL', 'RL', 'RDFS', 'None' (default)
         """        
         self._reasoning = reasoning
         self.__update_connection_string()
 
     def set_result_type(self, result_type):
         """
-        Set content type of result, accepted values: `xml`, `json`, `binary`
+        Set content type of result, accepted values: 'xml', 'json', 'binary-table' (default)
         """
         if not RESULTS_TYPES.has_key(result_type):
             raise Exception("Invalid result type: %s" % result_type)
@@ -227,7 +252,7 @@ class StardogClient(object):
 
     def set_http_method(self, method):
         """
-        Set HTTP Method, accepted values: `POST` or `GET`
+        Set HTTP Method, accepted values: 'POST' or 'GET'
         """
         if method not in ["POST", "GET"]:
             raise Exception("Invalid HTTP method: %s" % method)
@@ -281,11 +306,11 @@ class ResultParser(object):
         """
         ASK queries are used to test if a query would have a result.  If the
         query is an ASK query there won't be an actual result, and
-        :func:`fetchone` will return nothing. Instead, this method can be
+        :func:'fetchone' will return nothing. Instead, this method can be
         called to check the result from the ASK query.
 
         If the query is a SELECT statement, then the return value of
-        :func:`hasresult` is `None`, as the XML result format doesn't tell you
+        :func:'hasresult' is 'None', as the XML result format doesn't tell you
         if there are any rows in the result until you have read the first one.
         """
         return self._hasResult
@@ -296,7 +321,7 @@ class ResultParser(object):
         return self._iter
 
     def fetchone(self):
-        """ Synonim for :func:`fetchone`. """
+        """ Synonim for :func:'fetchone'. """
         return iter(self).next()
 
     def fetchall(self):

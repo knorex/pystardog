@@ -1,0 +1,18 @@
+h1. pystardog: python client library for "Stardog":http://stardog.com
+
+h2. Dependencies
+
+* "Python":http://www.python.org/ >= 2.4
+* "simplejson":http://pypi.python.org/pypi/simplejson/ (if you're having Python < 2.6)
+
+h2. Examples
+
+* Please see https://github.com/knorex/pystardog/wiki for more information and example code.
+
+h2. Author
+
+* "Knorex":http://www.knorex.com
+
+h2. License
+
+pystardog is freely available for all uses under MPL license.
