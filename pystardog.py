@@ -13,6 +13,14 @@ Results are encapsulated in a :class:`ResultsParser` instance::
 """
 
 __version__ = "0.1"
+__author__ = "Huy Phan"
+__copyright__ = "Copyright 2007, The Cogent Project"
+__credits__ = ["Huy Phan"]
+__license__ = "MPL"
+__maintainer__ = "Huy Phan"
+__email__ = "dachuy@gmail.com"
+__status__ = "Production"
+
 
 import httplib, urllib
 from urlparse import urlparse
