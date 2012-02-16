@@ -519,11 +519,13 @@ class BinaryTableResultParser(ResultParser):
 
         done = False
         while not done:
+            added = False
             record_type_marker = self.read_byte()
             if record_type_marker == self.RT_NULL:
                 pass            
             elif record_type_marker == self.RT_REPEAT:
                 self.add_last() 
+                added = True
             elif record_type_marker == self.RT_NAMESPACE:
                 ord = self.read_int()
                 prefix = self.read_atom()
@@ -532,19 +534,24 @@ class BinaryTableResultParser(ResultParser):
                 ord = self.read_int()
                 localname = self.read_atom()
                 self.add(IRI(namespaces[ord] + localname))
+                added = True
             elif record_type_marker == self.RT_URI:
                 iri = self.read_atom()
                 self.add(IRI(iri))
+                added = True
             elif record_type_marker == self.RT_BNODE:
                 label = self.read_atom()
                 self.add(BNode(label))
+                added = True
             elif record_type_marker == self.RT_PLAIN_LITERAL:
                 value = self.read_atom()
                 self.add(Literal(value))
+                added = True
             elif record_type_marker == self.RT_LANG_LITERAL:
                 value = self.read_atom()
                 lang = self.read_atom()
                 self.add(Literal(value, lang))
+                added = True
             elif record_type_marker == self.RT_DATATYPE_LITERAL:
                 value = self.read_atom()
                 b = self.read_byte()
@@ -552,9 +559,11 @@ class BinaryTableResultParser(ResultParser):
                     ord = self.read_int()
                     localname = self.read_atom()
                     self.add(Literal(value, namespaces[ord] + localname))
+                    added = True
                 elif b ==self.RT_URI:
                     iri = self.read_atom()
                     self.add(Literal(value, iri))
+                    added = True
                 else:
                     raise Exception("Unknown atom type: %d" % record_type_marker)
             elif record_type_marker == self.RT_ERROR:
@@ -571,6 +580,6 @@ class BinaryTableResultParser(ResultParser):
             else:
                 raise Exception("Unknown atom type: %d" % record_type_marker)
 
-            if self.idx == self.columns - 1:
+            if added == True and self.idx == self.columns - 1:
                 self.last = self.vals
                 yield self.vals
